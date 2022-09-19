@@ -1,0 +1,16 @@
+@use '../../styles/variables';
+
+.sidebar {
+  width: 300px;
+  min-width: 300px;
+  background: variables.$primary-color;
+  min-height: 100vh;
+  box-sizing: border-box;
+  position: relative;
+  color: variables.$white;
+
+  .content {
+    position: fixed;
+    width: inherit;
+  };
+}
