@@ -1,0 +1,15 @@
+@use '../../styles/variables';
+
+.navLink {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  text-decoration: none;
+  width: 100%;
+  color: variables.$white;
+  box-sizing: border-box;
+
+  &:hover {
+    background-color: variables.$hover-effect-color;
+  }
+}

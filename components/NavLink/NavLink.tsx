@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+import styles from "./NavLink.module.scss";
 
 interface NavLinkProps {
   href: string;
@@ -11,7 +12,7 @@ export default function NavLink({ href, label }: NavLinkProps) {
 
   return (
     <Link href={href} passHref>
-      <a>
+      <a className={styles.navLink}>
         {label}
       </a>
     </Link>
