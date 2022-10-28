@@ -15,7 +15,7 @@ export default function Sidebar() {
     <div className={styles.sidebar}>
       <div className={styles.content}>
         <div className={styles.user}>
-          <Avatar src="" />
+          {/* <Avatar src="" /> */}
           <p>Hey User1</p>
         </div>
         <div>
