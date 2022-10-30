@@ -1,6 +1,6 @@
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper } from '@mui/material';
 import { useState } from 'react';
-import { BalanceEntry } from '../../models/balanceEntry';
+import { Transaction } from '../../models/transaction';
 import { CATEGORY } from '../../models/category';
 import { BALANCE_ENTRY_TYPE } from '../../models/type';
 import TableInput from '../TableInput/TableInput';
@@ -11,12 +11,12 @@ function createData(
   category: CATEGORY,
   type: BALANCE_ENTRY_TYPE,
   amount: number,
-): BalanceEntry {
+): Transaction {
   return { description, category, type, amount };
 }
 
 export default function RecordTable() {
-  const [entries, setEntries] = useState([] as BalanceEntry[]);
+  const [entries, setEntries] = useState([] as Transaction[]);
 
   const handleSumbit = (description: string, category: CATEGORY, type: BALANCE_ENTRY_TYPE, amount: number) => {
     setEntries(prevEntries => [...prevEntries, createData(description, category, type, amount)]);
