@@ -1,7 +1,7 @@
 import RecordTable from "../components/RecordTable/RecordTable";
 import styles from "../styles/balance.module.scss";
 
-export default function Balance() {
+export default function Transaction() {
 
   return (
     <div className={styles.container}>

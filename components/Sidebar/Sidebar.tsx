@@ -4,8 +4,8 @@ import styles from "./Sidebar.module.scss";
 
 const navLinks = [
   {
-    href: '/balance',
-    label: 'Balance'
+    href: '/transactions',
+    label: 'Transaction'
   }
 ];
 
