@@ -1,11 +1,11 @@
-import RecordTable from "../components/RecordTable/RecordTable";
-import styles from "../styles/balance.module.scss";
+import TransactionTable from "../components/Transaction/TransactionTable/TransactionTable";
+import styles from "../styles/transactions.module.scss";
 
 export default function Transaction() {
 
   return (
     <div className={styles.container}>
-      <RecordTable />
+      <TransactionTable />
     </div>
   );
 }

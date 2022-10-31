@@ -1,25 +1,26 @@
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper } from '@mui/material';
 import { useState } from 'react';
-import { Transaction } from '../../models/transaction';
-import { CATEGORY } from '../../models/category';
-import { BALANCE_ENTRY_TYPE } from '../../models/type';
-import TableInput from '../TableInput/TableInput';
-import styles from "./RecordTable.module.scss";
+import styles from "./TransactionTable.module.scss";
+import dayjs, { Dayjs } from 'dayjs';
+import { BALANCE_ENTRY_TYPE } from '../../../models/type';
+import TableInput from '../TransactionInput/TransactionInput';
+import { Transaction } from '../../../models/transaction';
 
 function createData(
   description: string,
-  category: CATEGORY,
+  tags: string[],
   type: BALANCE_ENTRY_TYPE,
+  time: Dayjs,
   amount: number,
 ): Transaction {
-  return { description, category, type, amount };
+  return { description, tags, type, time, amount };
 }
 
-export default function RecordTable() {
+export default function TransactionTable() {
   const [entries, setEntries] = useState([] as Transaction[]);
 
-  const handleSumbit = (description: string, category: CATEGORY, type: BALANCE_ENTRY_TYPE, amount: number) => {
-    setEntries(prevEntries => [...prevEntries, createData(description, category, type, amount)]);
+  const handleSumbit = (description: string, tags: string[], type: BALANCE_ENTRY_TYPE, time: Dayjs | null, amount: number) => {
+    setEntries(prevEntries => [...prevEntries, createData(description, tags, type, time ? time : dayjs(new Date()), amount)]);
   };
 
   return (
@@ -30,8 +31,9 @@ export default function RecordTable() {
           <TableHead>
             <TableRow>
               <TableCell>Description</TableCell>
-              <TableCell align="center">Category</TableCell>
+              <TableCell align="center">Tags</TableCell>
               <TableCell align="center">Type</TableCell>
+              <TableCell align="center">Date</TableCell>
               <TableCell align="center">Amount&nbsp;($)</TableCell>
             </TableRow>
           </TableHead>
@@ -44,8 +46,9 @@ export default function RecordTable() {
                 <TableCell component="th" scope="row">
                   {entry.description}
                 </TableCell>
-                <TableCell align="center">{entry.category}</TableCell>
+                <TableCell align="center">{entry.tags.join(',')}</TableCell>
                 <TableCell align="center">{entry.type}</TableCell>
+                <TableCell align="center">{entry.time.format('DD-MM-YYYY').toString()}</TableCell>
                 <TableCell align="center">{entry.amount}</TableCell>
               </TableRow>
             ))}
