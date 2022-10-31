@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import { BALANCE_ENTRY_TYPE } from "../../../models/type";
 import styles from './TransactionInput.module.scss';
 import { DesktopDatePicker } from '@mui/x-date-pickers';
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
 import { TAG } from "../../../models/tag";
 
 interface TransactionInputProps {
@@ -30,20 +30,21 @@ const MenuProps = {
   },
 };
 
+function isFormInValid(description: string, tags: string[], time: Dayjs | null) {
+  return (description == '' || tags.length === 0 || time === null);
+}
+
 export default function TransactionInput({ handleSumbit }: TransactionInputProps) {
   const [ description, setDescription ] = useState('');
   const [ selectedTags, setSelectedTags ] = useState([] as string[]);
   const [ type, setType ] = useState(BALANCE_ENTRY_TYPE.GAIN);
   const [ amount, setAmount ] = useState(0);
-  const [ time, setTime ] = useState<Dayjs | null>(
-    dayjs(new Date()),
-  );
+  const [ time, setTime ] = useState<Dayjs | null>(null);
 
   const handleTagsChange = useCallback((e: SelectChangeEvent<typeof selectedTags>) => {
     const {
       target: { value },
     } = e;
-    console.log(value)
     setSelectedTags(
       // On autofill we get a stringified value.
       typeof value === 'string' ? value.split(',') : value,
@@ -58,6 +59,14 @@ export default function TransactionInput({ handleSumbit }: TransactionInputProps
     setTime(newValue);
   }, []);
 
+  const onSubmit = useCallback(() => {
+    if (isFormInValid(description, selectedTags, time)) {
+      // TODO: handle form invalid situation
+    } else {
+      handleSumbit(description, selectedTags, type, time, amount);
+    }
+  }, [description, selectedTags, type, time, amount, handleSumbit]);
+
   return (
     <div className={styles.container}>
         <TextField
@@ -67,10 +76,10 @@ export default function TransactionInput({ handleSumbit }: TransactionInputProps
           onChange={(e) => setDescription(e.target.value)}
         />
         <FormControl sx={{ width: 200 }}>
-          <InputLabel id="demo-multiple-checkbox-label">Tag</InputLabel>
+          <InputLabel id="tag-multiple-checkbox">Tag</InputLabel>
           <Select
-            labelId="demo-multiple-checkbox-label"
-            id="demo-multiple-checkbox"
+            labelId="tag-multiple-checkbox-label"
+            id="tag-multiple-checkbox"
             multiple
             value={selectedTags}
             onChange={handleTagsChange}
@@ -104,7 +113,7 @@ export default function TransactionInput({ handleSumbit }: TransactionInputProps
           </Select>
         </FormControl>
         <DesktopDatePicker
-          label="Date desktop"
+          label="Date"
           inputFormat="MM/DD/YYYY"
           value={time}
           onChange={handleDateCahnge}
@@ -120,7 +129,7 @@ export default function TransactionInput({ handleSumbit }: TransactionInputProps
           onChange={(e) => setAmount(+e.target.value)}
         />
 
-        <Button variant="contained" onClick={() => handleSumbit(description, selectedTags, type, time, amount)}>ADD NEW ROW</Button>
+        <Button variant="contained" onClick={onSubmit}>ADD NEW ROW</Button>
       </div>
   );
 }
