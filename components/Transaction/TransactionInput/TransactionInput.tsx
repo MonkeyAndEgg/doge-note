@@ -1,23 +1,22 @@
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Button, OutlinedInput, Checkbox, ListItemText } from "@mui/material";
 import { useCallback, useState } from "react";
-import { BALANCE_ENTRY_TYPE } from "../../../models/type";
 import styles from './TransactionInput.module.scss';
 import { DesktopDatePicker } from '@mui/x-date-pickers';
 import { Dayjs } from 'dayjs';
 import { TAG } from "../../../models/tag";
+import { Type } from "@prisma/client";
 
 interface TransactionInputProps {
-  handleSumbit: (description: string, tags: string[], type: BALANCE_ENTRY_TYPE, time: Dayjs | null, amount: number) => void;
+  handleSumbit: (description: string, tags: string[], type: Type, date: Dayjs | null, amount: number) => void;
 }
 
 const tags = [
   TAG.FOOD,
   TAG.INSURANCE
 ];
-
 const types = [
-  BALANCE_ENTRY_TYPE.GAIN,
-  BALANCE_ENTRY_TYPE.LOSS
+  Type.Gain,
+  Type.Loss
 ];
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -30,16 +29,16 @@ const MenuProps = {
   },
 };
 
-function isFormInValid(description: string, tags: string[], time: Dayjs | null) {
-  return (description == '' || tags.length === 0 || time === null);
+function isFormInValid(description: string, tags: string[], date: Dayjs | null) {
+  return (description == '' || tags.length === 0 || date === null);
 }
 
 export default function TransactionInput({ handleSumbit }: TransactionInputProps) {
   const [ description, setDescription ] = useState('');
   const [ selectedTags, setSelectedTags ] = useState([] as string[]);
-  const [ type, setType ] = useState(BALANCE_ENTRY_TYPE.GAIN);
+  const [ type, setType ] = useState('' as Type);
   const [ amount, setAmount ] = useState(0);
-  const [ time, setTime ] = useState<Dayjs | null>(null);
+  const [ date, setDate ] = useState<Dayjs | null>(null);
 
   const handleTagsChange = useCallback((e: SelectChangeEvent<typeof selectedTags>) => {
     const {
@@ -52,20 +51,20 @@ export default function TransactionInput({ handleSumbit }: TransactionInputProps
   }, []);
 
   const handleTypeChange = useCallback((e: SelectChangeEvent) => {
-    setType(e.target.value as BALANCE_ENTRY_TYPE);
+    setType(e.target.value as Type);
   }, []);
 
-  const handleDateCahnge = useCallback((newValue: Dayjs | null) => {
-    setTime(newValue);
+  const handleDateChange = useCallback((newValue: Dayjs | null) => {
+    setDate(newValue);
   }, []);
 
   const onSubmit = useCallback(() => {
-    if (isFormInValid(description, selectedTags, time)) {
+    if (isFormInValid(description, selectedTags, date)) {
       // TODO: handle form invalid situation
     } else {
-      handleSumbit(description, selectedTags, type, time, amount);
+      handleSumbit(description, selectedTags, type, date, amount);
     }
-  }, [description, selectedTags, type, time, amount, handleSumbit]);
+  }, [description, selectedTags, type, date, amount, handleSumbit]);
 
   return (
     <div className={styles.container}>
@@ -115,8 +114,8 @@ export default function TransactionInput({ handleSumbit }: TransactionInputProps
         <DesktopDatePicker
           label="Date"
           inputFormat="MM/DD/YYYY"
-          value={time}
-          onChange={handleDateCahnge}
+          value={date}
+          onChange={handleDateChange}
           renderInput={(params) => <TextField {...params} />}
         />
         <TextField

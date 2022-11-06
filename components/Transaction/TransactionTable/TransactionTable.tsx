@@ -1,26 +1,31 @@
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper } from '@mui/material';
-import { useState } from 'react';
 import styles from "./TransactionTable.module.scss";
 import dayjs, { Dayjs } from 'dayjs';
-import { BALANCE_ENTRY_TYPE } from '../../../models/type';
 import TableInput from '../TransactionInput/TransactionInput';
 import { Transaction } from '../../../models/transaction';
+import useTransactionCrud from '../../../hooks/useTransactionCrud';
+import { Type } from '@prisma/client';
+import { useSelector } from 'react-redux';
+import { AppState } from '../../../store/store';
 
 function createData(
   description: string,
   tags: string[],
-  type: BALANCE_ENTRY_TYPE,
-  time: Dayjs,
+  type: Type,
+  date: Dayjs,
   amount: number,
 ): Transaction {
-  return { description, tags, type, time, amount };
+  return { description, tags, type, date, amount };
 }
 
 export default function TransactionTable() {
-  const [entries, setEntries] = useState([] as Transaction[]);
+  const transactions = useSelector((state: AppState) => state.transaction.transactions);
+  const { addTransaction, loadTransactions } = useTransactionCrud();
 
-  const handleSumbit = (description: string, tags: string[], type: BALANCE_ENTRY_TYPE, time: Dayjs | null, amount: number) => {
-    setEntries(prevEntries => [...prevEntries, createData(description, tags, type, time ? time : dayjs(new Date()), amount)]);
+  const handleSumbit = (description: string, tags: string[], type: Type, date: Dayjs | null, amount: number) => {
+    addTransaction(createData(description, tags, type, date ? date : dayjs(new Date()), amount));
+    // reloading transactions
+    loadTransactions();
   };
 
   return (
@@ -38,7 +43,7 @@ export default function TransactionTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {entries.map((entry) => (
+            {transactions.map((entry) => (
               <TableRow
                 key={entry.description}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -48,7 +53,7 @@ export default function TransactionTable() {
                 </TableCell>
                 <TableCell align="center">{entry.tags.join(',')}</TableCell>
                 <TableCell align="center">{entry.type}</TableCell>
-                <TableCell align="center">{entry.time.format('DD-MM-YYYY').toString()}</TableCell>
+                <TableCell align="center">{entry.date.format('DD-MM-YYYY').toString()}</TableCell>
                 <TableCell align="center">{entry.amount}</TableCell>
               </TableRow>
             ))}
