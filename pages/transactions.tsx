@@ -1,11 +1,14 @@
+import dayjs from "dayjs";
 import { GetServerSideProps } from "next";
 import TransactionTable from "../components/Transaction/TransactionTable/TransactionTable";
-import prisma from "../lib/prisma";
+import { Transaction } from "../models/transaction";
 import { setTransactions } from "../store/slices/transactionSlice";
 import { wrapper } from "../store/store";
 import styles from "../styles/transactions.module.scss";
+import apiRequest from "../util/apiRequest";
+import { Transaction as TransactionSchema } from "@prisma/client";
 
-export default function Transaction() {
+export default function Transactions() {
 
   return (
     <div className={styles.container}>
@@ -15,9 +18,20 @@ export default function Transaction() {
 }
 
 export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(store => async () => {
-  const transactions = await prisma.transaction.findMany({});
+  const response = await apiRequest('/api/transactions', { method: 'GET' });
+  const parsedData: { transactions: TransactionSchema[] } = await response.json();
 
-  store.dispatch(setTransactions({ transactions, totalTransactions: transactions.length }));
+  const mappedTransactions = parsedData.transactions.map(transaction => {
+    return {
+      description: transaction.description,
+      tags: transaction.tags,
+      type: transaction.type,
+      date: JSON.parse(JSON.stringify(dayjs(transaction.date))), // workaround for serialization error for date
+      amount: Number(transaction.amount)
+    } as Transaction;
+  });
+
+  store.dispatch(setTransactions({ transactions: mappedTransactions, totalTransactions: mappedTransactions.length }));
 
   return {
     props: {}
