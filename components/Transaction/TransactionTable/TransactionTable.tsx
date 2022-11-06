@@ -43,18 +43,18 @@ export default function TransactionTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {transactions.map((entry) => (
+            {transactions.map((transaction: Transaction) => (
               <TableRow
-                key={entry.description}
+                key={transaction.description}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {entry.description}
+                  {transaction.description}
                 </TableCell>
-                <TableCell align="center">{entry.tags.join(',')}</TableCell>
-                <TableCell align="center">{entry.type}</TableCell>
-                <TableCell align="center">{entry.date.format('DD-MM-YYYY').toString()}</TableCell>
-                <TableCell align="center">{entry.amount}</TableCell>
+                <TableCell align="center">{transaction.tags.join(',')}</TableCell>
+                <TableCell align="center">{transaction.type}</TableCell>
+                <TableCell align="center">{dayjs(transaction.date).format('YYYY-MM-DD').toString()}</TableCell>
+                <TableCell align="center">{transaction.amount}</TableCell>
               </TableRow>
             ))}
           </TableBody>
