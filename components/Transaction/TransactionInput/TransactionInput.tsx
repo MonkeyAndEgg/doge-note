@@ -63,6 +63,13 @@ export default function TransactionInput({ handleSumbit }: TransactionInputProps
       // TODO: handle form invalid situation
     } else {
       handleSumbit(description, selectedTags, type, date, amount);
+
+      // reset form inputs
+      setDescription('');
+      setSelectedTags([]);
+      setType('' as Type);
+      setDate(null);
+      setAmount(0);
     }
   }, [description, selectedTags, type, date, amount, handleSumbit]);
 
