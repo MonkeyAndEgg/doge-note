@@ -22,10 +22,10 @@ export default function TransactionTable() {
   const transactions = useSelector((state: AppState) => state.transaction.transactions);
   const { addTransaction, loadTransactions } = useTransactionCrud();
 
-  const handleSumbit = (description: string, tags: string[], type: Type, date: Dayjs | null, amount: number) => {
-    addTransaction(createData(description, tags, type, date ? date : dayjs(new Date()), amount));
+  const handleSumbit = async (description: string, tags: string[], type: Type, date: Dayjs | null, amount: number) => {
+    await addTransaction(createData(description, tags, type, date ? date : dayjs(new Date()), amount));
     // reloading transactions
-    loadTransactions();
+    await loadTransactions();
   };
 
   return (
