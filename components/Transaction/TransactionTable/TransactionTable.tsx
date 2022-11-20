@@ -31,7 +31,7 @@ export default function TransactionTable() {
   return (
     <div className={styles.container}>
       <TableInput handleSumbit={handleSumbit} />
-      <TableContainer component={Paper}>
+      { transactions.length > 0 ? <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
@@ -59,7 +59,10 @@ export default function TransactionTable() {
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
+        </TableContainer> : <div>
+          The table is empty.
+        </div>
+      }
     </div>
   );
 }
