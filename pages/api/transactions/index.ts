@@ -1,8 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { Prisma } from '@prisma/client';
-import type { NextApiRequest, NextApiResponse } from 'next'
-import prisma from '../../lib/prisma'
-import errorHandler from '../../util/errorHandler';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import prisma from '../../../lib/prisma';
+import errorHandler from '../../../util/errorHandler';
 
 export default async function handler(
   req: NextApiRequest,
@@ -17,7 +17,7 @@ export default async function handler(
           tags,
           type,
           date,
-          amount,
+          amount: Number(amount).toFixed(2),  // store the amount with 2 decimals
         } as Prisma.TransactionCreateInput
       });
 
