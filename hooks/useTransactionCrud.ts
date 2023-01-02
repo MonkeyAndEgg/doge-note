@@ -37,9 +37,20 @@ export default function useTransactionCrud() {
       errorHandler(e);
     }
   };
+
+  const deleteTransaction = async (id: string) => {
+    try {
+      await apiRequest(`/api/transactions/${id}`, {
+        method: 'DELETE',
+      });
+    } catch(e) {
+      errorHandler(e);
+    }
+  };
   
   return {
     addTransaction,
-    loadTransactions
+    loadTransactions,
+    deleteTransaction,
   };
 }

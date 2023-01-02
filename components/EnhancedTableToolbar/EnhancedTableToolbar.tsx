@@ -4,10 +4,10 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  onDelete: () => void;
 }
 
-export default function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { numSelected } = props;
+export default function EnhancedTableToolbar({ numSelected, onDelete }: EnhancedTableToolbarProps) {
 
   return (
     <Toolbar
@@ -41,7 +41,7 @@ export default function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
       )}
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton onClick={onDelete}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>

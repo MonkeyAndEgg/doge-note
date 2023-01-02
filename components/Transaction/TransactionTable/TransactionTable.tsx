@@ -26,12 +26,11 @@ function createData(
 
 export default function TransactionTable() {
   const transactions = useSelector((state: AppState) => state.transaction.transactions);
-  const { addTransaction, loadTransactions } = useTransactionCrud();
+  const { addTransaction, loadTransactions, deleteTransaction } = useTransactionCrud();
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState<keyof Transaction>('date');
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [page, setPage] = useState(0);
-  const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const handleSumbit = async (description: string, tags: string[], type: Type, date: Dayjs | null, amount: number) => {
@@ -92,8 +91,11 @@ export default function TransactionTable() {
     setPage(0);
   };
 
-  const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDense(event.target.checked);
+  const handleDelete = async () => {
+    await Promise.all(selected.map((id: string) => 
+      deleteTransaction(id)));
+    setSelected([]);
+    await loadTransactions();
   };
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -103,9 +105,9 @@ export default function TransactionTable() {
     <div className={styles.container}>
       <TableInput handleSumbit={handleSumbit} />
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar numSelected={selected.length} onDelete={handleDelete} />
         { transactions.length > 0 && <TableContainer>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table" size={dense ? 'small' : 'medium'}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table" size='medium'>
             <EnhancedTableHead
               numSelected={selected.length}
               order={order}
@@ -152,7 +154,7 @@ export default function TransactionTable() {
                 emptyRows > 0 && (
                   <TableRow
                     style={{
-                      height: (dense ? 33 : 53) * emptyRows,
+                      height: 53 * emptyRows,
                     }}
                   >
                     <TableCell colSpan={6} />
