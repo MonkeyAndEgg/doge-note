@@ -23,6 +23,7 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
 
   const mappedTransactions = parsedData.transactions.map(transaction => {
     return {
+      id: transaction.id,
       description: transaction.description,
       tags: transaction.tags,
       type: transaction.type,
