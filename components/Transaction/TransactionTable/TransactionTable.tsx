@@ -1,5 +1,4 @@
-import { TableContainer, Table, TableRow, TableCell, TableBody, Paper, Checkbox, TablePagination } from '@mui/material';
-import styles from "./TransactionTable.module.scss";
+import { TableContainer, Table, TableRow, TableCell, TableBody, Paper, Checkbox, TablePagination, Box } from '@mui/material';
 import dayjs, { Dayjs } from 'dayjs';
 import TableInput from '../TransactionInput/TransactionInput';
 import { Transaction } from '../../../models/transaction';
@@ -12,6 +11,7 @@ import EnhancedTableHead, { Order } from '../../EnhancedTableHead/EnhancedTableH
 import { getComparator } from '../../../util/comparator';
 import { stableSort } from '../../../util/stableSort';
 import EnhancedTableToolbar from '../../EnhancedTableToolbar/EnhancedTableToolbar';
+import TransactionActions from '../TransactionActions/TransactionActions';
 
 function createData(
   description: string,
@@ -82,7 +82,6 @@ export default function TransactionTable() {
   };
 
   const isItemSelected = (transaction: Transaction) => {
-    console.log('current transaction id is', transaction.id);
     return transaction.id ? selected.indexOf(transaction.id) > -1 : false;
   };
 
@@ -102,79 +101,82 @@ export default function TransactionTable() {
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - transactions.length) : 0;
 
   return (
-    <div className={styles.container}>
-      <TableInput handleSumbit={handleSumbit} />
-      <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} onDelete={handleDelete} />
-        { transactions.length > 0 && <TableContainer>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table" size='medium'>
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={onSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={transactions.length}
-            />
-            <TableBody>
-              {stableSort(transactions, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((transaction: any, index) => {
-                const isSelected = isItemSelected(transaction);
-                const labelId = `enhanced-table-checkbox-${index}`;
+    <Box sx={{ width: "100%", height: "100%", display: "flex",flexDirection: "column", justifyContent: "space-between" }}>
+      <Box sx={{ width: "100%" }}>
+        <TableInput handleSumbit={handleSumbit} />
+        <Paper sx={{ width: "100%", mb: 2 }}>
+          <EnhancedTableToolbar numSelected={selected.length} onDelete={handleDelete} />
+          { transactions.length > 0 && <TableContainer>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table" size='medium'>
+              <EnhancedTableHead
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={onSelectAllClick}
+                onRequestSort={handleRequestSort}
+                rowCount={transactions.length}
+              />
+              <TableBody>
+                {stableSort(transactions, getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((transaction: any, index) => {
+                  const isSelected = isItemSelected(transaction);
+                  const labelId = `enhanced-table-checkbox-${index}`;
 
-                return (<TableRow
-                  hover
-                  key={transaction.description}
-                  role="checkbox"
-                  tabIndex={-1}
-                  aria-checked={isSelected}
-                  selected={isSelected}
-                  onClick={(event) => handleClick(event, transaction.id ? transaction.id : '')}
-                >
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      color="primary"
-                      checked={isSelected}
-                      inputProps={{
-                        'aria-labelledby': labelId,
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell component="th" scope="row" id={labelId} padding="none">
-                    {transaction.description}
-                  </TableCell>
-                  <TableCell align="center">{transaction.tags.join(',')}</TableCell>
-                  <TableCell align="center">{transaction.type}</TableCell>
-                  <TableCell align="center">{dayjs(transaction.date).format('YYYY-MM-DD').toString()}</TableCell>
-                  <TableCell align="center">{transaction.amount}</TableCell>
-                </TableRow>);
-              })}
-              {
-                emptyRows > 0 && (
-                  <TableRow
-                    style={{
-                      height: 53 * emptyRows,
-                    }}
+                  return (<TableRow
+                    hover
+                    key={transaction.description}
+                    role="checkbox"
+                    tabIndex={-1}
+                    aria-checked={isSelected}
+                    selected={isSelected}
+                    onClick={(event) => handleClick(event, transaction.id ? transaction.id : '')}
                   >
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                )
-              }
-            </TableBody>
-          </Table>
-          </TableContainer>
-        }
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={transactions.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper>
-    </div>
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        color="primary"
+                        checked={isSelected}
+                        inputProps={{
+                          'aria-labelledby': labelId,
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell component="th" scope="row" id={labelId} padding="none">
+                      {transaction.description}
+                    </TableCell>
+                    <TableCell align="center">{transaction.tags.join(',')}</TableCell>
+                    <TableCell align="center" sx={{ color: transaction.type === Type.Gain ? '#07d942' : '#fc0303' }}>{transaction.type}</TableCell>
+                    <TableCell align="center">{dayjs(transaction.date).format('YYYY-MM-DD').toString()}</TableCell>
+                    <TableCell align="center">{transaction.amount}</TableCell>
+                  </TableRow>);
+                })}
+                {
+                  emptyRows > 0 && (
+                    <TableRow
+                      style={{
+                        height: 53 * emptyRows,
+                      }}
+                    >
+                      <TableCell colSpan={6} />
+                    </TableRow>
+                  )
+                }
+              </TableBody>
+            </Table>
+            </TableContainer>
+          }
+          <TablePagination
+            rowsPerPageOptions={[5, 10]}
+            component="div"
+            count={transactions.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Paper>
+      </Box>
+      <TransactionActions />
+    </Box>
   );
 }

@@ -19,6 +19,7 @@
     "@prisma/client": "^4.5.0",
     "@reduxjs/toolkit": "^1.8.6",
     "dayjs": "^1.11.6",
+    "export-to-csv": "^0.2.1",
     "next": "12.3.0",
     "next-redux-wrapper": "^8.0.0",
     "react": "18.2.0",
