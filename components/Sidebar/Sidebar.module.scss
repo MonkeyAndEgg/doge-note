@@ -1,0 +1,32 @@
+@use '../../styles/variables';
+
+.sidebar {
+  width: 300px;
+  min-width: 300px;
+  background: variables.$primary-color;
+  min-height: 100vh;
+  box-sizing: border-box;
+  position: relative;
+  color: variables.$white;
+
+  .content {
+    position: fixed;
+    width: inherit;
+
+    .user {
+      font-weight: bold;
+      text-align: center;
+      letter-spacing: 1px;
+      padding: 40px 30px;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+  };
+
+  .footer {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+}

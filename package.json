@@ -1,0 +1,39 @@
+{
+  "name": "doge-note",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
+    "@mui/icons-material": "^5.11.0",
+    "@mui/material": "^5.10.8",
+    "@mui/utils": "^5.11.2",
+    "@mui/x-data-grid": "^5.17.9",
+    "@mui/x-date-pickers": "^5.0.6",
+    "@prisma/client": "^4.5.0",
+    "@reduxjs/toolkit": "^1.8.6",
+    "dayjs": "^1.11.6",
+    "export-to-csv": "^0.2.1",
+    "next": "12.3.0",
+    "next-redux-wrapper": "^8.0.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-redux": "^8.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "18.7.18",
+    "@types/react": "18.0.20",
+    "@types/react-dom": "18.0.6",
+    "eslint": "8.23.1",
+    "eslint-config-next": "12.3.0",
+    "prisma": "^4.5.0",
+    "sass": "^1.54.9",
+    "typescript": "4.8.3"
+  }
+}
