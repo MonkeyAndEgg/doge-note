@@ -1,5 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { Prisma } from '@prisma/client';
+import dayjs from 'dayjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../../lib/prisma';
 import errorHandler from '../../../util/errorHandler';
@@ -30,7 +31,16 @@ export default async function handler(
     }
   } else {
     try {
-      const transactions = await prisma.transaction.findMany({});
+      const { year } = req.query;
+      const fiterOptions = year ? {
+        where: {
+          date: {
+            gte: dayjs(year as string).toDate(),
+            lt: dayjs(year as string).add(1, 'year').toDate()
+          }
+        }
+      } : undefined;
+      const transactions = await prisma.transaction.findMany(fiterOptions);
 
       res.status(200).send({
         transactions

@@ -1,4 +1,4 @@
-import { TableContainer, Table, TableRow, TableCell, TableBody, Paper, Checkbox, TablePagination, Box } from '@mui/material';
+import { TableContainer, Table, TableRow, TableCell, TableBody, Paper, Checkbox, TablePagination, Box, Select, MenuItem, Dialog, DialogTitle, DialogContent, Button, DialogActions, SelectChangeEvent } from '@mui/material';
 import dayjs, { Dayjs } from 'dayjs';
 import TableInput from '../TransactionInput/TransactionInput';
 import { Transaction } from '../../../models/transaction';
@@ -26,12 +26,15 @@ function createData(
 
 export default function TransactionTable() {
   const transactions = useSelector((state: AppState) => state.transaction.transactions);
+  const years = useSelector((state: AppState) => state.transaction.years);
   const { addTransaction, loadTransactions, deleteTransaction } = useTransactionCrud();
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState<keyof Transaction>('date');
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [openFilterDialog, setOpenFilterDialog] = useState(false);
+  const [selectedYear, setSelectedYear] = useState(years[0]+'');
 
   const handleSumbit = async (description: string, tags: string[], type: Type, date: Dayjs | null, amount: number) => {
     await addTransaction(createData(description, tags, type, date ? date : dayjs(new Date()), amount));
@@ -97,6 +100,23 @@ export default function TransactionTable() {
     await loadTransactions();
   };
 
+  const handleFilterButtonClick = async () => {
+    setOpenFilterDialog(true);
+  }
+
+  const handleFilter = async () => {
+    handleFilterClose();
+    await loadTransactions(selectedYear);
+  }
+
+  const handleFilterClose = () => {
+    setOpenFilterDialog(false);
+  }
+
+  const handleYearChange = (e: SelectChangeEvent) => {
+    setSelectedYear(e.target.value);
+  }
+
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - transactions.length) : 0;
 
@@ -105,7 +125,7 @@ export default function TransactionTable() {
       <Box sx={{ width: "100%" }}>
         <TableInput handleSumbit={handleSumbit} />
         <Paper sx={{ width: "100%", mb: 2 }}>
-          <EnhancedTableToolbar numSelected={selected.length} onDelete={handleDelete} />
+          <EnhancedTableToolbar numSelected={selected.length} onDelete={handleDelete} onFilter={handleFilterButtonClick} />
           { transactions.length > 0 && <TableContainer>
             <Table sx={{ minWidth: 650 }} aria-label="simple table" size='medium'>
               <EnhancedTableHead
@@ -177,6 +197,28 @@ export default function TransactionTable() {
         </Paper>
       </Box>
       <TransactionActions />
+      <Dialog open={openFilterDialog} onClose={handleFilterClose}>
+        <DialogTitle>Apply Filter</DialogTitle>
+        <DialogContent>
+          <Select
+            labelId="year-select-label"
+            id="year-select"
+            value={selectedYear}
+            label="Year"
+            onChange={handleYearChange}
+          >
+            {
+              years && years.map((year) => (
+                <MenuItem key={year} value={year}>{year}</MenuItem>
+              ))
+            }
+          </Select>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleFilterClose}>Cancel</Button>
+          <Button onClick={handleFilter}>Filter</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

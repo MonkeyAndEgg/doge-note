@@ -8,9 +8,13 @@ import { Transaction as TransactionSchema } from "@prisma/client";
 export default function useTransactionCrud() {
   const dispatch = useDispatch();
 
-  const loadTransactions = async () => {
+  const loadTransactions = async (year?: string) => {
     try {
-      const res = await apiRequest('/api/transactions', {
+      let url = '/api/transactions';
+      if (year) {
+        url += `?year=${year}`;
+      }
+      const res = await apiRequest(url, {
         method: 'GET',
       });
   
